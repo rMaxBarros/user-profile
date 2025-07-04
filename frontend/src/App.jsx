@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import UserProfileDisplay from './components/UserProfileDisplay/UserProfileDisplay';
-import ProfileHeader from './components/ProfileHeader/ProfileHeader'; //
+import ProfileHeader from './components/ProfileHeader/ProfileHeader';
+import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
 import './App.css';
 import './index.css';
 
@@ -9,13 +11,12 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
     const fetchUserProfile = async () => {
+      setLoading(true);
+      setError(null); // Reseta o erro antes de buscar o perfil
       try {
         const response = await fetch('http://localhost/sync-360-api/usuario');
         if (!response.ok) {
-          // Se o usuário não existir (ID 1 não encontrado no backend), o backend tenta criar um padrão
-          // Se mesmo assim falhar, ou se a resposta não for OK por outro motivo, lança o erro
           const errorData = await response.json();
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
@@ -29,8 +30,13 @@ function App() {
       }
     };
 
-    fetchUserProfile();
+    useEffect(() => {
+      fetchUserProfile(); // Chama a função na montagem do componente
   }, []);
+
+  const handleSaveUser = async (updatedUser) => {
+    console.log("Usuário a ser salvo:", updatedUser);
+  };
 
   if (loading) {
     return <div className="app-container">Carregando perfil...</div>;
@@ -45,10 +51,21 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <ProfileHeader photoUrl={user.url_foto} userName={user.nome} />
-      <UserProfileDisplay user={user} />
-    </div>
+    <Router>
+      <div className="App">
+
+        <ProfileHeader photoUrl={user.url_foto} userName={user.nome} />
+
+        <Routes>
+          <Route path="/perfil" element={<UserProfileDisplay user={user} />} />
+          <Route 
+            path="/perfil/editar" 
+            element={<EditProfilePage user={user} onSave={handleSaveUser} />} 
+          />
+          <Route path="/" element={<UserProfileDisplay user={user} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
