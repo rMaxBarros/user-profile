@@ -1,0 +1,10 @@
+:root {
+  --color-primary: #196AA0;
+  --color-secondary: rgba(118, 164, 206, 0.6);
+  --color-tertiary: rgba(118, 164, 206, 0.4); 
+  --color-background: #F1F1F1;
+  --color-border-photo: rgba(31, 31, 31, 0.1);
+  --color-text-dark: #2B2B2B;
+  --color-text-light: #FEFEFE;
+  --color-text-muted: #5F5F5F;
+}
