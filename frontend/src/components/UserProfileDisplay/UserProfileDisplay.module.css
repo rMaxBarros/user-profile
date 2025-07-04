@@ -1,0 +1,57 @@
+.container {
+  max-width: 600px;
+  margin: -0px auto 40px auto;
+  padding: 30px;
+  background-color: var(--color-text-light);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+  z-index: 5;
+}
+
+.profileName {
+  color: var(--color-primary);
+  margin-top: 50px;
+  font-size: 2.2em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.profileDetails {
+  text-align: left;
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-top: 30px;
+}
+
+.profileDetails p {
+  margin-bottom: 10px;
+}
+
+.profileDetails strong {
+  color: var(--color-text-muted);
+}
+
+/* Estilos para a mensagem de carregamento/erro */
+.app-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+}
+.error-message {
+  color: red;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+    .container {
+        margin: 0 auto 20px auto;
+    }
+}
