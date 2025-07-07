@@ -133,6 +133,45 @@
   flex: 0 0 30%;
 }
 
+/* Estilos para foto do perfil */
+.profileImageUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 10px;
+}
+
+.imageUploadLabel {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary);
+  font-weight: 500;
+  text-align: center;
+}
+
+.profileImagePreview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.imageUploadLabel:hover .profileImagePreview {
+  border-color: #145680; /* Cor mais escura no hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.fileInput {
+  display: none; /* Oculta o input de arquivo padrão */
+}
+
 /* Ajustes para mobile */
 @media (max-width: 768px) {
   .buttonsContainer {

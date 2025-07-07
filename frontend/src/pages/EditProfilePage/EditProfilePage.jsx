@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './EditProfilePage.module.css';
 
+const DEFAULT_PROFILE_IMAGE = 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg';
+
 function EditProfilePage({ user, onSave }) {
 
   const navigate = useNavigate();
@@ -13,8 +15,9 @@ function EditProfilePage({ user, onSave }) {
     numero: '',
     bairro: '',
     cidade: '',
-    url_foto: '',
   });
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
 
   // Efeito para preencher o formulário com os dados do usuário
   // quando o componente é montado ou quando o usuário é atualizado
@@ -28,8 +31,8 @@ function EditProfilePage({ user, onSave }) {
         numero: user.numero || '',
         bairro: user.bairro || '',
         cidade: user.cidade || '',
-        url_foto: user.url_foto || '',
       });
+      // setProfileImageFile(user.url_foto || '');
     }
   }, [user]);
 
@@ -43,15 +46,41 @@ function EditProfilePage({ user, onSave }) {
     }));
   };
 
+  // Função para lidar com a seleção do arquivo de imagem
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+    } else {
+      setProfileImageFile(null);
+      setProfileImagePreview(null);
+    }
+  };
+
   // Função para lidar com o envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dados a serem salvos:", formData);
 
-    const dataToSave = {
-      ...formData,
-      id: user.id,
-    };
+    const dataToSave = new FormData();
+    dataToSave.append('id', user.id);
+    dataToSave.append('nome', formData.nome);
+    dataToSave.append('idade', formData.idade);
+    dataToSave.append('bio', formData.bio);
+    dataToSave.append('rua', formData.rua);
+    dataToSave.append('numero', formData.numero);
+    dataToSave.append('bairro', formData.bairro);
+    dataToSave.append('cidade', formData.cidade);
+
+    // Adiciona o arquivo de imagem se houver um selecionado
+    if (profileImageFile) {
+      dataToSave.append('profile_image', profileImageFile);
+    } else {
+      // Se nenhum novo arquivo for selecionado, mas havia uma URL existente, envie-a
+      // Importante para que o backend saiba que a foto não mudou ou para manter a antiga
+      dataToSave.append('url_foto_existente', user.url_foto);
+    }
+
 
     try {
       await onSave(dataToSave);
@@ -75,6 +104,32 @@ function EditProfilePage({ user, onSave }) {
     <div className={styles.container}>
       <h2 className={styles.title}>Editar Informações</h2>
       <form onSubmit={handleSubmit} className={styles.editForm}>
+
+        {/* Campo de pré-visualização da Imagem de Perfil */}
+        <div className={styles.profileImageUpload}>
+          <label htmlFor="profile_image_upload" className={styles.imageUploadLabel}>
+            {/* Condicional para exibir o preview da nova imagem */}
+            {profileImagePreview && (
+              <img
+                src={profileImagePreview}
+                alt="Pré-visualização da Foto de Perfil"
+                className={styles.profileImagePreview}
+              />
+            )}
+            <span className={styles.editIcon}>
+                {profileImagePreview ? 'Mudar foto do perfil' : 'Clique para selecionar uma foto'}
+                &#x270E;
+            </span>
+          </label>
+          <input
+            type="file"
+            id="profile_image_upload"
+            name="profile_image_upload"
+            accept="image/*"
+            onChange={handleFileChange}
+            className={styles.fileInput}
+          />
+        </div>
 
         {/* Campo Nome */}
         <div className={styles.formGroup}>
@@ -173,19 +228,6 @@ function EditProfilePage({ user, onSave }) {
               className={styles.inputField}
             />
           </div>
-        </div>
-
-        {/* Campo URL da Foto (por enquanto em forma de URL) */}
-        <div className={styles.formGroup}>
-          <label htmlFor="url_foto">URL da Foto</label>
-          <input
-            type="text"
-            id="url_foto"
-            name="url_foto"
-            value={formData.url_foto}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
         </div>
 
         {/* Botões de Ação */}
