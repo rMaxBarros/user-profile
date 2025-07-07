@@ -48,10 +48,19 @@ function EditProfilePage({ user, onSave }) {
     e.preventDefault();
     console.log("Dados a serem salvos:", formData);
 
-    alert('Dados salvos.');
+    const dataToSave = {
+      ...formData,
+      id: user.id,
+    };
 
-    // Quando o salvamento for realizado, redireciona para a página de perfil
-    navigate('/perfil');
+    try {
+      await onSave(dataToSave);
+      alert('Perfil atualizado com sucesso!');
+      navigate('/perfil'); // Redireciona para a tela de perfil após o salvamento
+    } catch (error) {
+      console.error("Erro ao salvar o perfil:", error);
+      alert(`Erro ao salvar perfil: ${error.message || 'Verifique o console para mais detalhes.'}`);
+    }
   };
 
   if (!user) {

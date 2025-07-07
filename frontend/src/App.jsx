@@ -11,11 +11,13 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const API_BASE_URL = 'http://localhost/sync-360-api';
+
     const fetchUserProfile = async () => {
       setLoading(true);
       setError(null); // Reseta o erro antes de buscar o perfil
       try {
-        const response = await fetch('http://localhost/sync-360-api/usuario');
+        const response = await fetch(`${API_BASE_URL}/usuario`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -35,7 +37,28 @@ function App() {
   }, []);
 
   const handleSaveUser = async (updatedUser) => {
-    console.log("Usuário a ser salvo:", updatedUser);
+    try {
+      const response = await fetch(`${API_BASE_URL}/usuario`, {
+        method: 'PUT', // Método HTTP para atualização
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser), // Enviando os dados como JSON
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      // Se a atualização foi bem-sucedida...
+      await fetchUserProfile(); 
+      return true; // Indica sucesso
+    } catch (error) {
+      // Se não for bem sucedida...
+      console.error("Erro ao salvar o perfil (App.jsx):", error);
+      throw error; // Propaga o erro para o EditProfilePage lidar com ele
+    }
   };
 
   if (loading) {

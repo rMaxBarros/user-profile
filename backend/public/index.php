@@ -2,7 +2,7 @@
 // Definir o cabeçalho para permitir requisições de origens diferentes (CORS)
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
@@ -27,11 +27,6 @@ $user = new User($db);
 $method = $_SERVER['REQUEST_METHOD'];
 $request_uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
 
-// Pega a parte relevante da URL após o alias.
-// Ex: http://localhost/sync-360-api/usuario
-//     $request_uri[0] seria "sync-360-api"
-//     $request_uri[1] seria "usuario"
-// Precisamos de $request_uri[1] para identificar a rota.
 $api_base = 'sync-360-api'; // Alias do Apache configurado no httpd-vhosts.conf
 $route_index = array_search($api_base, $request_uri);
 $route_segment = ($route_index !== false && isset($request_uri[$route_index + 1])) ? $request_uri[$route_index + 1] : '';
@@ -70,11 +65,23 @@ switch ($method) {
                 $user->url_foto = "https://via.placeholder.com/200"; // URL de foto padrão
 
                 if ($user->create()) {
+                    $user_arr = array(
+                        "id" => $db->lastInsertId(), // Obtém o ID do último inserido
+                        "nome" => $user->nome,
+                        "idade" => $user->idade,
+                        "bio" => $user->bio,
+                        "rua" => $user->rua,
+                        "numero" => $user->numero,
+                        "bairro" => $user->bairro,
+                        "cidade" => $user->cidade,
+                        "url_foto" => $user->url_foto
+                    );
+
                     http_response_code(201); // Criado
-                    echo json_encode(array("message" => "Primeiro usuário criado com sucesso.", "id" => $db->lastInsertId()));
+                    echo json_encode($user_arr); // Retorna o objeto completo do usuário
                 } else {
                     http_response_code(503); // Não foi possível criar o usuário
-                    echo json_encode(array("message" => "Não foi possível criar o primeiro usuário."));
+                    echo json_encode(array("message" => "Não foi possível criar o usuário."));
                 }
             }
         } elseif ($route_segment === 'usuarios') {
@@ -148,14 +155,23 @@ switch ($method) {
 
     case 'POST':
         if ($route_segment === 'usuario') {
-            // Rota POST /usuario (atualiza os dados do usuário com ID 1)
+             http_response_code(405); // Method Not Allowed
+             echo json_encode(array("message" => "Método POST não permitido para /usuario. Use PUT para atualizar."));
+        } else {
+            http_response_code(404);
+            echo json_encode(array("message" => "Rota POST não encontrada ou não suportada para este segmento."));
+        }
+        break;
+
+    case 'PUT':
+        if ($route_segment === 'usuario') {
             $data = json_decode(file_get_contents("php://input"));
 
-            // Verifica se os dados necessários foram enviados
+            // Verifica se os dados necessários para atualização foram enviados
             if (
                 !empty($data->id) &&
                 !empty($data->nome) &&
-                isset($data->idade) && // Idade pode ser 0
+                isset($data->idade) &&
                 !empty($data->bio) &&
                 !empty($data->rua) &&
                 !empty($data->numero) &&
@@ -174,12 +190,12 @@ switch ($method) {
                 $user->cidade = $data->cidade;
                 $user->url_foto = $data->url_foto;
 
-                // Atualizar o usuário
+                // Tentar atualizar o usuário
                 if ($user->update()) {
-                    http_response_code(200);
+                    http_response_code(200); // OK
                     echo json_encode(array("message" => "Usuário atualizado com sucesso."));
                 } else {
-                    http_response_code(503);
+                    http_response_code(503); // Service Unavailable
                     echo json_encode(array("message" => "Não foi possível atualizar o usuário."));
                 }
             } else {
@@ -188,7 +204,7 @@ switch ($method) {
             }
         } else {
             http_response_code(404);
-            echo json_encode(array("message" => "Rota POST não encontrada."));
+            echo json_encode(array("message" => "Rota PUT não encontrada."));
         }
         break;
 
