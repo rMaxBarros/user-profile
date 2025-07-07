@@ -47,13 +47,90 @@
 }
 
 .saveButton {
-  background-color: var(--color-primary); /* Cor para o botão Salvar */
+  background-color: var(--color-primary);
   color: var(--color-text-light);
   border: none;
 }
 
 .saveButton:hover {
   background-color: #145680;
+}
+
+/* Formulário */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.formGroup label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--color-text-dark);
+  font-size: 0.9em;
+}
+
+.inputField {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 1em;
+  background-color: var(--color-secondary);
+  color: var(--color-text-dark);
+  box-sizing: border-box;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(25, 106, 160, 0.2);
+}
+
+.textareaField {
+  resize: vertical;
+  min-height: 100px;
+  background-color: var(--color-tertiary);
+}
+
+.sectionTitle {
+  color: var(--color-text-dark);
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.2em;
+  font-weight: 500;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.addressFields {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.addressFields .formGroup {
+  flex: 1;
+}
+
+.addressFields .numField {
+  flex: 0 0 30%;
 }
 
 /* Ajustes para mobile */
