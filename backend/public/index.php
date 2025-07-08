@@ -1,15 +1,22 @@
 <?php
-// Definir o cabeçalho para permitir requisições de origens diferentes (CORS)
-header("Access-Control-Allow-Origin: *");
-
-// Definir o cabeçalho para permitir requisições de origens diferentes (CORS)
+// Definir os cabeçalhos para permitir requisições de origens diferentes (CORS)
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-$DEFAULT_PROFILE_IMAGE = 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg';
+// Inclui o autoloader do Composer. O caminho é relativo a 'public/'.
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Criando uma instância do Dotenv e carregando as variáveis de ambiente.
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+// Acessando as variáveis de ambiente usando $_ENV
+$DEFAULT_PROFILE_IMAGE = $_ENV['DEFAULT_PROFILE_IMAGE'];
+$UPLOAD_DIR_RELATIVE = $_ENV['UPLOAD_DIR_RELATIVE'];
+$UPLOAD_BASE_URL = $_ENV['UPLOAD_BASE_URL'];
 
 // Lida com requisições OPTIONS (preflight requests) que navegadores fazem antes de POST/PUT/DELETE
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -28,14 +35,23 @@ $db = $database->getConnection();
 // Cria uma instância do objeto Usuário
 $user = new User($db);
 
-// Obtém o método da requisição HTTP e a URL
+// Obtém o método da requisição HTTP
 $method = $_SERVER['REQUEST_METHOD'];
-$request_uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
 
-$api_base = 'sync-360-api'; // Alias do Apache configurado no httpd-vhosts.conf
-$route_index = array_search($api_base, $request_uri);
-$route_segment = ($route_index !== false && isset($request_uri[$route_index + 1])) ? $request_uri[$route_index + 1] : '';
-$action_segment = ($route_index !== false && isset($request_uri[$route_index + 2])) ? $request_uri[$route_index + 2] : '';
+// Remove barras extras e divide a URI em segmentos.
+$request_uri_segments = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+
+// Variável para o alias que seria usado no Apache.
+$apache_api_alias = 'sync-360-api';
+
+// Determina o segmento da rota principal e da ação.
+if (isset($request_uri_segments[0]) && $request_uri_segments[0] === $apache_api_alias) {
+    $route_segment = $request_uri_segments[1] ?? '';
+    $action_segment = $request_uri_segments[2] ?? '';
+} else {
+    $route_segment = $request_uri_segments[0] ?? '';
+    $action_segment = $request_uri_segments[1] ?? '';
+}
 
 switch ($method) {
     case 'GET':
@@ -66,7 +82,7 @@ switch ($method) {
                 $user->numero = "123";
                 $user->bairro = "Bairro Teste";
                 $user->cidade = "Cidade Fictícia";
-                $user->url_foto = "https://via.placeholder.com/200";
+                $user->url_foto = $DEFAULT_PROFILE_IMAGE;;
 
                 if ($user->create()) {
                     $user_arr = array(
@@ -158,9 +174,44 @@ switch ($method) {
         break;
 
     case 'PUT':
+        
         if ($route_segment === 'usuario') {
-             http_response_code(405); // Method Not Allowed
-             echo json_encode(array("message" => "Método PUT não permitido para /usuario. Use PUT para atualizar."));
+             // Este trecho agora lida com o PUT para atualização
+            $data = json_decode(file_get_contents("php://input")); // PUTs geralmente enviam JSON no body
+
+            if (
+                !empty($data->id) &&
+                !empty($data->nome) &&
+                isset($data->idade) && (is_numeric($data->idade) || $data->idade === '') &&
+                !empty($data->bio) &&
+                !empty($data->rua) &&
+                !empty($data->numero) &&
+                !empty($data->bairro) &&
+                !empty($data->cidade)
+            ) {
+                $user->id = $data->id;
+                $user->nome = $data->nome;
+                $user->idade = (int)$data->idade;
+                $user->bio = $data->bio;
+                $user->rua = $data->rua;
+                $user->numero = $data->numero;
+                $user->bairro = $data->bairro;
+                $user->cidade = $data->cidade;
+                // A URL da foto para PUT é diferente do POST de upload
+                $user->url_foto = $data->url_foto ?? null; // Assume que a URL da foto vem no JSON para PUT
+
+                if ($user->update()) {
+                    http_response_code(200);
+                    echo json_encode(array("message" => "Usuário atualizado com sucesso via PUT."));
+                } else {
+                    http_response_code(503);
+                    echo json_encode(array("message" => "Não foi possível atualizar o usuário via PUT."));
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(array("message" => "Não foi possível atualizar o usuário via PUT. Dados incompletos."));
+            }
+
         } else {
             http_response_code(404);
             echo json_encode(array("message" => "Rota PUT não encontrada ou não suportada para este segmento."));
@@ -169,13 +220,11 @@ switch ($method) {
 
     case 'POST':
 
-        $raw_input = file_get_contents("php://input");
-
         if ($route_segment === 'usuario') {
 
-            $data = (object)$_POST;
+            $data = (object)$_POST; // Pega os dados do POST (form-data)
 
-            $upload_dir = '../uploads/'; 
+            $upload_dir = __DIR__ . '/' . $UPLOAD_DIR_RELATIVE;
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0755, true); // Cria o diretório se não existir
             }
@@ -183,7 +232,7 @@ switch ($method) {
             $profile_image_url = $_POST['url_foto_existente'] ?? null;
 
             if (isset($_POST['url_foto_existente']) && $_POST['url_foto_existente'] === '') {
-                 $profile_image_url = null; // O usuário quer remover a foto
+                $profile_image_url = null; // O usuário quer remover a foto
             }
 
             // Verifica se um arquivo de imagem foi enviado
@@ -212,21 +261,14 @@ switch ($method) {
 
                 // Move o arquivo temporário para o destino final
                 if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                    // Guarda o caminho completo para salvar no banco de dados
-                    $profile_image_url = 'http://localhost/projects/sync-360/backend/uploads/' . $new_file_name;
-
+                    $profile_image_url = $UPLOAD_BASE_URL . $new_file_name;
                 } else {
-
                     http_response_code(500);
-                    // echo json_encode(array("message" => "Não foi possível mover o arquivo de imagem enviado."));
-                    // exit();
                     echo json_encode(array(
-                    "message" => "DEBUG: Dados incompletos ou inválidos.",
-                    "POST_data" => $_POST, // Conteúdo de $_POST
-                    "FILES_data" => $_FILES, // Conteúdo de $_FILES
-                    "debug_info" => "Verifique se todos os campos esperados estão em POST_data."
-                ));
-                exit();
+                        "message" => "Não foi possível mover o arquivo de imagem enviado.",
+                        "debug_info" => "Verifique permissões da pasta 'uploads' e configurações de upload do PHP."
+                    ));
+                    exit();
                 }
             }
 
