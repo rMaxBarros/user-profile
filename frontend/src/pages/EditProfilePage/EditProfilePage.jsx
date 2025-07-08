@@ -78,9 +78,15 @@ function EditProfilePage({ user, onSave }) {
     } else {
       // Se nenhum novo arquivo for selecionado, mas havia uma URL existente, envie-a
       // Importante para que o backend saiba que a foto não mudou ou para manter a antiga
-      dataToSave.append('url_foto_existente', user.url_foto);
+      dataToSave.append('url_foto_existente', user.url_foto || '');
     }
 
+    // *** NOVA DEPURACAO NO FRONTEND ***
+    console.log("Conteúdo do FormData antes do envio:");
+    for (let [key, value] of dataToSave.entries()) {
+        console.log(`${key}:`, value);
+    }
+    // *** FIM DA NOVA DEPURACAO ***
 
     try {
       await onSave(dataToSave);

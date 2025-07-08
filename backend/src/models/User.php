@@ -87,7 +87,7 @@ class User {
         $this->numero = htmlspecialchars(strip_tags($this->numero));
         $this->bairro = htmlspecialchars(strip_tags($this->bairro));
         $this->cidade = htmlspecialchars(strip_tags($this->cidade));
-        $this->url_foto = htmlspecialchars(strip_tags($this->url_foto));
+        $this->url_foto = $this->url_foto ? htmlspecialchars(strip_tags($this->url_foto)) : null;
         $this->id = htmlspecialchars(strip_tags($this->id));
 
         // Vinculando os parâmetros
@@ -100,13 +100,17 @@ class User {
         $stmt->bindParam(':cidade', $this->cidade);
         $stmt->bindParam(':url_foto', $this->url_foto);
         $stmt->bindParam(':id', $this->id);
-
-        // Executando a query
-        if ($stmt->execute()) {
-            return true;
+        if ($this->url_foto === null) {
+            $stmt->bindValue(':url_foto', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindParam(':url_foto', $this->url_foto);
         }
-
-        return false;
+        $stmt->bindParam(':id', $this->id); 
+          // Executando a query
+          if ($stmt->execute()) {
+              return true;
+          }
+          return false;
     }
 
     // Método para criar um usuário (usaremos para inserir o primeiro usuário se não existir)

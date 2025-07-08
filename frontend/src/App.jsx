@@ -36,14 +36,11 @@ function App() {
       fetchUserProfile(); // Chama a função na montagem do componente
   }, []);
 
-  const handleSaveUser = async (updatedUser) => {
+  const handleSaveUser = async (updatedUserFormData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/usuario`, {
-        method: 'PUT', // Método HTTP para atualização
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUser), // Enviando os dados como JSON
+        method: 'POST',
+        body: updatedUserFormData,
       });
 
       if (!response.ok) {

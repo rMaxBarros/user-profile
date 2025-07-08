@@ -1,0 +1,47 @@
+[33mcommit 7936713126043ca91f9eac4d71709c0515c656b1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/update-profile-picture[m[33m)[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Mon Jul 7 15:16:32 2025 -0300
+
+    feat: updating user profile picture upload in frontend
+
+[33mcommit d6cfa1452772025fde5d0102c54f144cfc67ec67[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Mon Jul 7 12:40:37 2025 -0300
+
+    feat: add put in backend API and updating frontend features
+
+[33mcommit f25a679cfc85c1143de53141905468cfacae8da4[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Sun Jul 6 22:17:58 2025 -0300
+
+    feat: Implementing forms
+
+[33mcommit fb6cb57fea0a4f4f1594c23b3a23a43aa1e4700b[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Fri Jul 4 19:49:26 2025 -0300
+
+    feat: add edit button and pages using react route
+
+[33mcommit 5c93dd388f062e900f8948eb91a5eb74b0a74af1[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Fri Jul 4 16:47:12 2025 -0300
+
+    feat: add first layout styles to homepage screen and header.
+
+[33mcommit 8fe4ce3df2fff9f5976736affea81c506cc72441[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Fri Jul 4 14:32:56 2025 -0300
+
+    feat: first frontend configurations
+
+[33mcommit 702ce70656261dd6cd5d47cffb4de565cf32bfaf[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Fri Jul 4 14:18:17 2025 -0300
+
+    feat: Implement and configure PHP/MySQL backend API for user profile
+
+[33mcommit ad6629378f1b7661230e80cc0a589e83cd25aeed[m
+Author: rMaxBarros <rmaxbarros@gmail.com>
+Date:   Thu Jul 3 19:21:41 2025 -0300
+
+    feat: Initial project setup and .gitignore
