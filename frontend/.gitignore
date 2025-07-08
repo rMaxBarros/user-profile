@@ -1,3 +1,9 @@
+# Ignorar todos os arquivos dentro da pasta uploads/
+uploads/*
+
+# Não ignorar o arquivo .htaccess dentro de uploads/
+!uploads/.htaccess
+
 # Logs
 logs
 *.log
