@@ -168,6 +168,11 @@ Agora que tudo está configurado, você pode iniciar o backend e o frontend.
 
 Você deve ver a interface de gerenciamento de perfil e poder interagir com ela.
 
+### Clique abaixo para acessar o projeto no Vercel.
+**ATENÇÃO:** O projeto só irá funcionar pelo link depois que você tiver realizado as configurações acima!!!!
+
+[Clique Aqui](https://user-profile-woad-seven.vercel.app/)
+
 ---
 
 Se tiver qualquer problema, verifique os logs nos terminais do backend e do frontend, e o console do navegador (F12).
