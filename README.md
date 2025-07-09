@@ -6,7 +6,7 @@
 
 ## 📝 Visão Geral do Projeto
 
-O Sync-360 é uma aplicação de perfil de usuário simples e eficiente, desenvolvida com React para o frontend e PHP com MySQL para o backend. Ele permite aos usuários visualizar, editar e gerenciar suas informações de perfil, incluindo nome, idade, biografia, endereço e uma foto de perfil. O projeto foi arquitetado para ser de fácil deploy e manutenção, utilizando variáveis de ambiente para configurações específicas de ambiente.
+O projeto é uma aplicação de perfil de usuário simples e eficiente, desenvolvida com React para o frontend e PHP com MySQL para o backend. Ele permite aos usuários visualizar, editar e gerenciar suas informações de perfil, incluindo nome, idade, biografia, endereço e uma foto de perfil. O projeto foi arquitetado para ser de fácil deploy e manutenção, utilizando variáveis de ambiente para configurações específicas de ambiente.
 
 ### Principais Funcionalidades:
 
@@ -43,7 +43,7 @@ Antes de começar, certifique-se de ter os seguintes softwares instalados em sua
     * Você pode baixar em [getcomposer.org](https://getcomposer.org/download/).
 ## 🖥️ Configuração e Execução do Projeto
 
-Siga os passos abaixo para configurar e rodar o Sync-360 em sua máquina local.
+Siga os passos abaixo para configurar e rodar o projeto em sua máquina local.
 
 ### 1. Configuração do Banco de Dados (MySQL)
 
@@ -76,7 +76,7 @@ Siga os passos abaixo para configurar e rodar o Sync-360 em sua máquina local.
 
 1.  Navegue até o diretório `backend/` do projeto no seu terminal.
     ```bash
-    cd C:\seu\caminho\de\pastas\backend # Ajuste para o seu caminho real e vá até a pasta backend do projeto.
+    cd C:/seu/caminho/de/pastas/backend # Ajuste para o seu caminho real e vá até a pasta backend do projeto.
     ```
 2.  Instale as dependências do Composer:
     ```bash
@@ -84,7 +84,7 @@ Siga os passos abaixo para configurar e rodar o Sync-360 em sua máquina local.
     ```
 3.  Crie um arquivo `.env` na raiz do diretório `backend/` (se ainda não existir). Você pode copiar o `backend/.env.example` para `backend/.env`.
     ```bash
-    copy backend\.env.example backend\.env  # Windows
+    copy backend/.env.example backend/.env  # Windows
     cp backend/.env.example backend/.env    # macOS/Linux
     ```
 4.  Abra o arquivo `backend/.env` e configure as variáveis de ambiente. A configuração abaixo é típica para XAMPP:
@@ -107,13 +107,13 @@ Siga os passos abaixo para configurar e rodar o Sync-360 em sua máquina local.
     # URL da imagem de perfil padrão
     DEFAULT_PROFILE_IMAGE=[https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg](https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg)
     ```
-5.  Crie o diretório `uploads` na raiz do seu projeto (`sync-360/uploads/`). Este diretório será usado para armazenar as imagens de perfil carregadas. Certifique-se de que ele tenha permissões de escrita para o PHP (em sistemas Linux/macOS, `chmod 777 uploads`).
+5.  Crie o diretório `uploads` na raiz do seu projeto (`suaPasta/uploads/`). Este diretório será usado para armazenar as imagens de perfil carregadas. Certifique-se de que ele tenha permissões de escrita para o PHP (em sistemas Linux/macOS, `chmod 777 uploads`).
 
 ### 3. Configuração do Frontend (React)
 
 1.  Navegue até o diretório `frontend/` do projeto no seu terminal.
     ```bash
-    cd C:\seu\caminho\de\pastas\frontend # Ajuste para o seu caminho real e vá até a pasta frontend do projeto.
+    cd C:/seu/caminho/de/pastas/frontend # Ajuste para o seu caminho real e vá até a pasta frontend do projeto.
     ```
 2.  Instale as dependências do Node.js:
     ```bash
@@ -123,7 +123,7 @@ Siga os passos abaixo para configurar e rodar o Sync-360 em sua máquina local.
     ```
 3.  Crie um arquivo `.env` na raiz do diretório `frontend/` (se ainda não existir). Você pode copiar o `frontend/.env.example` para `frontend/.env`.
     ```bash
-    copy frontend\.env.example frontend\.env # Windows
+    copy frontend/.env.example frontend/.env # Windows
     cp frontend/.env.example frontend/.env   # macOS/Linux
     ```
 4.  Abra o arquivo `frontend/.env` e configure a URL da API do backend. É crucial que esta URL aponte para o servidor PHP embutido que vamos iniciar.
@@ -140,7 +140,7 @@ Agora que tudo está configurado, você pode iniciar o backend e o frontend.
     * Abra um **novo terminal**.
     * Navegue até a **raiz da sua pasta `backend/`**:
         ```bash
-        cd C:\seu\caminho\de\pastas\backend # Ajuste para o seu caminho real
+        cd C:/seu/caminho/de/pastas/backend # Ajuste para o seu caminho real
         ```
     * Execute o seguinte comando para iniciar o servidor PHP embutido, servindo a pasta `public/`:
         ```bash
@@ -152,7 +152,7 @@ Agora que tudo está configurado, você pode iniciar o backend e o frontend.
     * Abra um **segundo terminal** (deixe o terminal do backend rodando no primeiro).
     * Navegue até a **raiz da sua pasta `frontend/`**:
         ```bash
-        cd C:\seu\caminho\de\pastas\frontend # Ajuste para o seu caminho real
+        cd C:/seu/caminho/de/pastas/frontend # Ajuste para o seu caminho real
         ```
     * Inicie o servidor de desenvolvimento React:
         ```bash
