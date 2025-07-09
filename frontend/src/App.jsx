@@ -59,7 +59,7 @@ function App() {
   };
 
   if (loading) {
-    return <div className="app-container">Carregando perfil...</div>;
+    return <div className="app-container loading-message">Carregando perfil...</div>;
   }
 
   if (error) {
@@ -67,7 +67,7 @@ function App() {
   }
 
   if (!user) {
-    return <div className="app-container">Nenhum perfil encontrado.</div>;
+    return <div className="app-container no-profile-found">Nenhum perfil encontrado.</div>;
   }
 
   return (
